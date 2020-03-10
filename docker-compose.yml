@@ -1,0 +1,18 @@
+version: "3"
+services:
+  tad:
+    image: postgres:9.6
+    container_name: "postgres_training"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+      - TZ=GMT
+    ports:
+      - 5432:5432
+#  app:
+#    image: felipe/training
+#    ports:
+#      - 8080:8080
+#    links:
+#      - tad
