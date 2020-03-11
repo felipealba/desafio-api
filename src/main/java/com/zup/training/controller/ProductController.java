@@ -22,10 +22,6 @@ public class ProductController {
 	@Autowired
 	private ProductService service;
 	
-	/*@Autowired
-	private ProductRepository repository;*/
-	
-	
 	@PostMapping
 	public ResponseEntity<Product> insertProduct (@RequestBody @Valid Product product){
 		return ResponseEntity.ok(service.create(product));
