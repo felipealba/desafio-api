@@ -29,9 +29,9 @@ public class ProductController {
 	private ProductService service;
 	
 	@PostMapping
-	public ResponseEntity<Product> insertProduct (@RequestBody @Valid Product product){
+	public ResponseEntity<Product> insertProduct(@RequestBody @Valid Product product){
 		try {
-			Product p = service.create(product);
+			Product p = service.insertProduct(product);
 			URI location = getUri(p.getSku());
 			return ResponseEntity.created(location).build();
 		}
@@ -41,13 +41,14 @@ public class ProductController {
 			
 	}
 	
-	private URI getUri(Long id) {
+	//get product location
+	private URI getUri(Long id){
 		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Product>> getProduct(){
-		return ResponseEntity.ok(service.listAll());
+	public ResponseEntity<List<Product>> getAllProducts(){
+		return ResponseEntity.ok(service.getAllProducts());
 	}
 	
 	@GetMapping("/{id}")
@@ -60,12 +61,12 @@ public class ProductController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Product> uptadeProduct(@RequestBody @Valid Product product, @PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(service.update(product, id));
+		return ResponseEntity.ok(service.updateProduct(product, id));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Product> deleteProduct(@PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(service.deleteProduct(id).get());
+	public ResponseEntity<Product> deleteProductById(@PathVariable(name = "id") Long id){
+		return ResponseEntity.ok(service.deleteProductById(id).get());
 	}
 
 }

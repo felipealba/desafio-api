@@ -16,19 +16,24 @@ public class ProductService {
 	@Autowired
 	private ProductRepository repository;
 
-	public Product create(Product product) {
+	public Product insertProduct(Product product) {
 		return repository.save(product);
 	}
 
-	public List<Product> listAll() {		
+	public List<Product> getAllProducts() {		
 		return repository.findAll();
 	}
 
 	public Optional<Product> getProductById(Long id) {
-		return repository.findById(id);
+		
+		Optional<Product> optPrd = repository.findById(id);
+		
+		Assert.isTrue(optPrd.isPresent(), "Não foi possível encontrar producto com Id informado");
+			
+		return optPrd;
 	}
 	
-	public Product update(Product product, Long id) {
+	public Product updateProduct(Product product, Long id) {
 		Assert.notNull(id, "Não foi possível atualizar o registro.");
 		
 		//Obtem o Product do banco de dados
@@ -54,7 +59,7 @@ public class ProductService {
 		
 	}
 
-	public Optional<Product> deleteProduct(Long id) {
+	public Optional<Product> deleteProductById(Long id) {
 		Assert.notNull(id, "Não foi possível deletar o registro.");
 		
 		//Obtem o Product do banco de dados para delecao

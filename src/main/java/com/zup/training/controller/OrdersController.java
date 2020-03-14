@@ -28,21 +28,21 @@ public class OrdersController {
 	private OrderService os;
 	
 	@PostMapping
-	public ResponseEntity<Order> Create(@RequestBody @Valid OrderDto orderDto)
+	public ResponseEntity<Order> insertOrder(@RequestBody @Valid OrderDto orderDto)
 	{
-		return ResponseEntity.ok(os.Create(orderDto));
+		return ResponseEntity.ok(os.insertOrder(orderDto));
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Order>> getProduct(){
-		List<Order> listOrd = os.listAll();
+	public ResponseEntity<List<Order>> getAllOrders(){
+		List<Order> listOrd = os.getAllOrders();
 		return listOrd.isEmpty() ? 
 				ResponseEntity.noContent().build():
 				ResponseEntity.ok(listOrd);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Order> orderById(@PathVariable(name = "id") Long id){
+	public ResponseEntity<Order> getOrderById(@PathVariable(name = "id") Long id){
 		Optional<Order> optOrd = os.getOrderById(id);
 		
 		return optOrd.isPresent()? 
@@ -52,12 +52,12 @@ public class OrdersController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Order> uptadeOrder(@RequestBody @Valid OrderDto orderDto, @PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(os.update(orderDto, id));
+		return ResponseEntity.ok(os.updateOrder(orderDto, id));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Order> deleteOrder(@PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(os.deleteOrder(id).get());
+	public ResponseEntity<Order> deleteOrderById(@PathVariable(name = "id") Long id){
+		return ResponseEntity.ok(os.deleteOrderById(id).get());
 	}
 	
 }

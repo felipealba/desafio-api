@@ -28,9 +28,8 @@ public class OrderService {
 	@Autowired
 	private ProductService productService;
 	
-	public Order Create(OrderDto orderDto)
+	public Order insertOrder(OrderDto orderDto)
 	{
-		
 		Order order = new Order();
 		double totalPrice=0.0;
 		
@@ -41,6 +40,7 @@ public class OrderService {
 		order = ordersRep.save(order); //Pq salvar em banco aqui se já salva mais abaixo?
 		
 		for(OrderItemDto item : orderDto.getItems()) {
+			
 			Product prd = productService.getProductById(item.getProductId()).get();
 			totalPrice += (prd.getPrice()*item.getQuantity());
 			OrderItem orderItem = new OrderItem();
@@ -59,7 +59,7 @@ public class OrderService {
 		
 	}
 	
-	public List<Order> listAll() {
+	public List<Order> getAllOrders() {
 		return ordersRep.findAll();
 	}
 	
@@ -67,7 +67,7 @@ public class OrderService {
 		return ordersRep.findById(id);
 	}
 	
-	public Order update(OrderDto orderDto, Long id) {
+	public Order updateOrder(OrderDto orderDto, Long id) {
 		Assert.notNull(id, "Não foi possível atualizar o registro.");
 		
 		//Obtem o Order do banco de dados
@@ -82,7 +82,7 @@ public class OrderService {
 			order.setItems(new ArrayList<OrderItem>());
 			order.setDiscount(orderDto.getDiscount());
 			order.setOrderId(id);
-			order = ordersRep.save(order); //Pq salvar em banco aqui se já salva mais abaixo?
+			order = ordersRep.save(order);
 			
 			for(OrderItemDto item : orderDto.getItems()) 
 			{
@@ -101,31 +101,14 @@ public class OrderService {
 			order.setOrderFinalPrice(totalPrice*(1-orderDto.getDiscount()));
 			
 			return ordersRep.save(order);
-			
-			/*orderDb.setClientName(order.getClientName());
-			orderDb.setClientPhone(order.getClientPhone());
-			orderDb.setDiscount(order.getDiscount());			
-			orderDb.setOrderId(order.getOrderId());*/
-			
-			//tirar duvida sobre o Builder abaixo. Tentei colocar aqui mas ele eh estatico. Qual solucao?
-			
-			/*orderDb = Order.builder()
-						.clientName(order.getClientName())
-						.clientPhone(order.getClientPhone())
-						.discount(order.getDiscount())
-						.orderFinalPrice(order.getOrderFinalPrice())
-						.orderId(order.getOrderId())
-						.totalPrice(order.getTotalPrice());*/
 		}
 		else
 		{
 			throw new RuntimeException("Não foi possível atualizar o registro");		
 		}
-		
-		
 	}
 
-	public Optional<Order> deleteOrder(Long id) 
+	public Optional<Order> deleteOrderById(Long id) 
 	{
 		Assert.notNull(id, "Não foi possível atualizar o registro.");
 		
@@ -134,12 +117,6 @@ public class OrderService {
 		if(optOrderDb.isPresent()) 
 		{
 			Order order = optOrderDb.get();
-			/*for(OrderItem item : order.getItems()) 
-			{
-				ordersItemRep.delete(item);
-			}*/
-			
-			//ordersItemRep.deleteAll(order.getItems());
 			ordersRep.delete(order);
 			return optOrderDb;
 		}
