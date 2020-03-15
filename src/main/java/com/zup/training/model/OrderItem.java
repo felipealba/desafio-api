@@ -8,9 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -33,6 +32,10 @@ public class OrderItem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@NotNull(message = "Campo 'quantidade' não pode estar em branco.")
+	@Min(value = 1, message = "Quantidade não pode ser negativo.")
+	private Integer quantity;
+	
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
     @JsonIgnore
@@ -42,6 +45,4 @@ public class OrderItem {
 	@JoinColumn(name = "product_sku", nullable = false)
 	private Product product;
 	
-	private Integer quantity;
-
 }

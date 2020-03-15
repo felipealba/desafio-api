@@ -35,7 +35,7 @@ public class OrderServiceTest {
 		
 		orderDto.setClientName("Felipe Alba");
 		orderDto.setClientPhone(998877L);
-		orderDto.setDiscount(0.20);
+		orderDto.setDiscount(20);
 		List<OrderItemDto>  items = new ArrayList<OrderItemDto>();
 		items.add(new OrderItemDto(8L, 5));
 		items.add(new OrderItemDto(9L, 17));

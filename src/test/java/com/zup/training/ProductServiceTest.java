@@ -52,7 +52,6 @@ class ProductServiceTest {
 		prd = optProd.get();
 		assertEquals("Canadian", optProd.get().getManufacturer());
 		assertEquals("Painel solar A.9", optProd.get().getDescription());
-		//assertEquals(10L, (long)optProd.get().getSku());
 		
 		//update
 		prd.setDescription("UPDATED");
@@ -70,16 +69,4 @@ class ProductServiceTest {
 		prodService.deleteProductById(id);		
 		assertFalse(prodService.getProductById(id).isPresent());
 	}
-
-	
-	/*public void fillOneProduct() {
-		this.prd.setSku(10L);
-		this.prd.setDepth(215.0);
-		this.prd.setDescription("Painel solar A.9");
-		this.prd.setHeight(0.52);
-		this.prd.setManufacturer("Canadian");
-		this.prd.setPrice(1580.90);
-		this.prd.setWeight(23.0);
-		this.prd.setWidth(92.5);
-	}*/
 }

@@ -37,7 +37,7 @@ public class OrderService {
 		order.setClientPhone(orderDto.getClientPhone());
 		order.setItems(new ArrayList<OrderItem>());
 		order.setDiscount(orderDto.getDiscount());
-		order = ordersRep.save(order); //Pq salvar em banco aqui se já salva mais abaixo?
+		order = ordersRep.save(order);
 		
 		for(OrderItemDto item : orderDto.getItems()) {
 			
@@ -53,7 +53,7 @@ public class OrderService {
 		}
 		
 		order.setTotalPrice(totalPrice);
-		order.setOrderFinalPrice(totalPrice*(1-orderDto.getDiscount()));
+		order.setOrderFinalPrice(totalPrice*(1-(orderDto.getDiscount()/100)));
 		
 		return ordersRep.save(order);
 		
