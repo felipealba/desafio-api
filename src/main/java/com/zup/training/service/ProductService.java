@@ -21,10 +21,15 @@ public class ProductService {
 	private ProductRepository repository;
 
 	public Product insertProduct(Product product) {
-		return repository.save(product);
+		if (checkProductConstraints(product))
+			return repository.save(product);
+		else {
+			logger.error("Campo do produto inserido com valor negativo. Esperado valor positivo.");
+			return null;
+		}
 	}
 
-	public List<Product> getAllProducts() {		
+	public List<Product> getAllProducts() {
 		return repository.findAll();
 	}
 
@@ -40,26 +45,32 @@ public class ProductService {
 	public Product updateProduct(Product product, Long id) throws Exception {
 		Assert.notNull(id, "Não foi possível atualizar o produto de id = "+id);
 		
-		//Obtem o Product do banco de dados
-		Optional<Product> optProductDb = getProductById(id);
-		if(optProductDb.isPresent()) {
-			Product productDb = optProductDb.get();
-			
-			productDb.setDepth(product.getDepth());
-			productDb.setDescription(product.getDescription());
-			productDb.setHeight(product.getHeight());
-			productDb.setManufacturer(product.getManufacturer());
-			productDb.setPrice(product.getPrice());
-			productDb.setWeight(product.getWeight());
-			productDb.setWidth(product.getWidth());
-			
-			return repository.save(productDb);
+		if (!checkProductConstraints(product)) {
+			logger.error("Campo do produto inserido com valor negativo. Esperado valor positivo.");
+			return null;
 		}
-		else
-		{
-			logger.error("Não foi possível atualizar o produto id="+id);
-			Exception ex = new Exception("Não foi possível atualizar o produto id="+id);
-			throw ex;		
+		else {
+			//Obtem o Product do banco de dados
+			Optional<Product> optProductDb = getProductById(id);
+			if(optProductDb.isPresent()) {
+				Product productDb = optProductDb.get();
+				
+				productDb.setDepth(product.getDepth());
+				productDb.setDescription(product.getDescription());
+				productDb.setHeight(product.getHeight());
+				productDb.setManufacturer(product.getManufacturer());
+				productDb.setPrice(product.getPrice());
+				productDb.setWeight(product.getWeight());
+				productDb.setWidth(product.getWidth());
+				
+				return repository.save(productDb);
+			}
+			else
+			{
+				logger.error("Não foi possível atualizar o produto id="+id);
+				Exception ex = new Exception("Não foi possível atualizar o produto id="+id);
+				throw ex;		
+			}
 		}
 	}
 
@@ -80,6 +91,12 @@ public class ProductService {
 	}
 
 	
-
+	private boolean checkProductConstraints(Product product) {
+		return (product.getDepth()>0 	&& 
+				product.getHeight()>0 	&&
+				product.getPrice()>0 	&&
+				product.getWeight()>0 	&&
+				product.getWidth()>0);
+	}
 	
 }

@@ -36,6 +36,9 @@ public class ProductController {
 	public ResponseEntity<Product> insertProduct(@RequestBody @Valid Product product){
 		try {
 			Product p = service.insertProduct(product);
+			if (p == null) {
+				return ResponseEntity.badRequest().build();
+			}
 			URI location = getUri(p.getSku());
 			return ResponseEntity.created(location).build();
 		}
@@ -43,7 +46,6 @@ public class ProductController {
 			logger.error("Não foi possível inserir o produto.");
 			return ResponseEntity.badRequest().build();
 		}
-			
 	}
 	
 	//product location
@@ -71,7 +73,18 @@ public class ProductController {
 	
 	@PutMapping("/{id}")
 	public ResponseEntity<Product> uptadeProduct(@RequestBody @Valid Product product, @PathVariable(name = "id") Long id) throws Exception{
-		return ResponseEntity.ok(service.updateProduct(product, id));
+		try {
+			Product p = service.updateProduct(product, id);
+			if (p == null) {
+				return ResponseEntity.badRequest().build();
+			}
+			return ResponseEntity.ok().build();
+		}
+		catch (Exception ex){
+			logger.error("Não foi possível inserir o produto.");
+			return ResponseEntity.badRequest().build();
+		}
+		
 	}
 	
 	@DeleteMapping("/{id}")

@@ -36,7 +36,14 @@
 - Testes unitários com Spring
 - Docker (containerização de aplicação)
 - Documentação utilizando Swagger
-- 
+
+> **Principais referências de busca de conceitos**
+- sobre microsserviço com opentracing: https://www.zup.com.br/blog/microsservico-com-opentrace-em-kotlin
+- Udemy cursos: Api Rest
+- site https://www.baeldung.com
+- site www.devmedia.com.br
+
+
 
 > **TODO/melhorias nas APIs**:
 - Implementação de Exception Handler
