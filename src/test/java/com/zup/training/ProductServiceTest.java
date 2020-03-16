@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.zup.training.model.Product;
@@ -19,6 +21,7 @@ import com.zup.training.service.ProductService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = ClassMode.BEFORE_EACH_TEST_METHOD)
 class ProductServiceTest {
 
 	@Autowired
@@ -57,7 +60,12 @@ class ProductServiceTest {
 		prd.setDescription("UPDATED");
 		Product prdUpdated = new Product();
 		try {
-			prdUpdated = prodService.updateProduct(prd, id);
+			try {
+				prdUpdated = prodService.updateProduct(prd, id);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (ObjectNotFoundException e){}
 			
 		assertEquals("UPDATED", prdUpdated.getDescription());

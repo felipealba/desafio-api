@@ -3,6 +3,8 @@ package com.zup.training.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -12,6 +14,8 @@ import com.zup.training.repository.ProductRepository;
 
 @Service
 public class ProductService {
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 	
 	@Autowired
 	private ProductRepository repository;
@@ -28,13 +32,13 @@ public class ProductService {
 		
 		Optional<Product> optPrd = repository.findById(id);
 		
-		Assert.isTrue(optPrd.isPresent(), "Não foi possível encontrar producto com Id informado");
+		//Assert.isTrue(optPrd.isPresent(), "Não foi possível encontrar producto com Id informado");
 			
 		return optPrd;
 	}
 	
-	public Product updateProduct(Product product, Long id) {
-		Assert.notNull(id, "Não foi possível atualizar o registro.");
+	public Product updateProduct(Product product, Long id) throws Exception {
+		Assert.notNull(id, "Não foi possível atualizar o produto de id = "+id);
 		
 		//Obtem o Product do banco de dados
 		Optional<Product> optProductDb = getProductById(id);
@@ -53,24 +57,25 @@ public class ProductService {
 		}
 		else
 		{
-			throw new RuntimeException("Não foi possível atualizar o registro");		
+			logger.error("Não foi possível atualizar o produto id="+id);
+			Exception ex = new Exception("Não foi possível atualizar o produto id="+id);
+			throw ex;		
 		}
-		
-		
 	}
 
-	public Optional<Product> deleteProductById(Long id) {
-		Assert.notNull(id, "Não foi possível deletar o registro.");
+	public boolean deleteProductById(Long id) {
+		Assert.notNull(id, "Não foi possível deletar o produto id = "+id);
 		
 		//Obtem o Product do banco de dados para delecao
 		Optional<Product> optProductDb = getProductById(id);
 		if(optProductDb.isPresent()) {
 			repository.deleteById(id);
-			return optProductDb;
+			logger.info("Produto id = "+id+" deletado com sucesso.");
+			return true;
 		}
 		else
 		{
-			throw new RuntimeException("Não foi possível deletar o registro. Motivo: registro nao encontrado");		
+			throw new RuntimeException("Não foi possível deletar o produto id="+id+". Motivo: registro nao encontrado");		
 		}
 	}
 

@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zup.training.model.Order;
 import com.zup.training.model.dto.OrderDto;
 import com.zup.training.service.OrderService;
+import com.zup.training.service.ProductService;
 
 @RestController
 @RequestMapping("/orders")
@@ -26,6 +29,8 @@ public class OrdersController {
 	
 	@Autowired
 	private OrderService os;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 	
 	@PostMapping
 	public ResponseEntity<Order> insertOrder(@RequestBody @Valid OrderDto orderDto)
@@ -56,8 +61,12 @@ public class OrdersController {
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Order> deleteOrderById(@PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(os.deleteOrderById(id).get());
+	public ResponseEntity<Boolean> deleteOrderById(@PathVariable(name = "id") Long id){
+		boolean deleteSucceded = os.deleteOrderById(id);
+		if(!deleteSucceded) {
+			logger.error("Não foi possível deletar o produto.");
+		}
+		return ResponseEntity.ok().build();
 	}
 	
 }

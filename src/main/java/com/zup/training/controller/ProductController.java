@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +30,8 @@ public class ProductController {
 	@Autowired
 	private ProductService service;
 	
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+	
 	@PostMapping
 	public ResponseEntity<Product> insertProduct(@RequestBody @Valid Product product){
 		try {
@@ -36,19 +40,25 @@ public class ProductController {
 			return ResponseEntity.created(location).build();
 		}
 		catch (Exception ex){
+			logger.error("Não foi possível inserir o produto.");
 			return ResponseEntity.badRequest().build();
 		}
 			
 	}
 	
-	//get product location
+	//product location
 	private URI getUri(Long id){
 		return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
 	}
 	
 	@GetMapping
 	public ResponseEntity<List<Product>> getAllProducts(){
-		return ResponseEntity.ok(service.getAllProducts());
+		List<Product> list = service.getAllProducts();
+		if(list.isEmpty()) {
+			logger.info("Não há produtos para serem exibidos. Sem conteúdo.");
+		}
+		logger.info("Lista de produtos encontrada.");
+		return ResponseEntity.ok(list);
 	}
 	
 	@GetMapping("/{id}")
@@ -60,13 +70,17 @@ public class ProductController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<Product> uptadeProduct(@RequestBody @Valid Product product, @PathVariable(name = "id") Long id){
+	public ResponseEntity<Product> uptadeProduct(@RequestBody @Valid Product product, @PathVariable(name = "id") Long id) throws Exception{
 		return ResponseEntity.ok(service.updateProduct(product, id));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Product> deleteProductById(@PathVariable(name = "id") Long id){
-		return ResponseEntity.ok(service.deleteProductById(id).get());
+	public ResponseEntity<Boolean> deleteProductById(@PathVariable(name = "id") Long id){
+		boolean deleteSucceded = service.deleteProductById(id); 
+		if(!deleteSucceded) {
+			logger.error("Não foi possível deletar o produto.");
+		}
+		return ResponseEntity.ok().build();
 	}
 
 }

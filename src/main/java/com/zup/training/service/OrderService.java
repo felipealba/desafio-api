@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -27,6 +29,8 @@ public class OrderService {
 	
 	@Autowired
 	private ProductService productService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 	
 	public Order insertOrder(OrderDto orderDto)
 	{
@@ -64,7 +68,11 @@ public class OrderService {
 	}
 	
 	public Optional<Order> getOrderById(Long id) {
-		return ordersRep.findById(id);
+		Optional<Order> opt = ordersRep.findById(id);
+		if(!opt.isPresent()) {
+			logger.error("Não foi possível encontrar pedido com o Id informado.");
+		}
+		return opt;
 	}
 	
 	public Order updateOrder(OrderDto orderDto, Long id) {
@@ -104,11 +112,12 @@ public class OrderService {
 		}
 		else
 		{
+			logger.error("Não foi possível atualizar o pedido.");
 			throw new RuntimeException("Não foi possível atualizar o registro");		
 		}
 	}
 
-	public Optional<Order> deleteOrderById(Long id) 
+	public boolean deleteOrderById(Long id) 
 	{
 		Assert.notNull(id, "Não foi possível atualizar o registro.");
 		
@@ -118,7 +127,7 @@ public class OrderService {
 		{
 			Order order = optOrderDb.get();
 			ordersRep.delete(order);
-			return optOrderDb;
+			return true;
 		}
 		else
 		{

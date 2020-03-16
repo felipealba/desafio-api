@@ -1,4 +1,4 @@
-package com.zup.training.api;
+package com.zup.training.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
