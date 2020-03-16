@@ -31,7 +31,7 @@
 - SGBD PostgreSQL + ORM Hibernate/JPA
 - H2 - banco de dados em memória
 - Ferramentas de observability:
-	- Jaeger
+	- Jaeger - tracing
 	- Actuator
 - Testes unitários com Spring
 - Docker (containerização de aplicação)
